@@ -1,0 +1,193 @@
+Configuration Management
+============================
+This is the process of configuring servers from one point
+of control
+
+Advantages
+==================
+1 Provisioning of Servers
+  Setup of s/w's on servers can be done very easily from one point
+
+2 Reduction of usage of resources
+  We require less amount of time,money and human resources to configure
+  servers
+
+3 Handling Snowflake servers
+  After a point of time all servers in the data center behave like
+  snowflake servers ie they might be running on slightly different
+  h/w and s/w confurations.Configuaration Management tools can pick
+  up this info in simple setup file which can be reused to setup
+  similar environments
+
+4 Disaster Recovery
+  In case of disaster recovery where we can loose an entire data center
+  we can recreate similar data center with greater ease
+
+5 Idempotent
+  Configuration Management tools are used to bring the servers to a
+  specific state called as "desired state",If the rmeote server is 
+  already in the desired state CM tools will not reconfigure that server
+
+===========================================================================
+Popular CM tools
+======================
+Ansible
+Chef
+Puppet
+Saltstack
+=========================================================================
+Ansible is installed on one machine that is called as "Controller"
+all the remaining servers that we want to configure are called
+as "managed nodes/hosts"
+Ansible uses "agentless" policy to configure the remote servers
+ie we don't require any client side s/w of ansible to be present
+on the managed nodes
+Ansible uses "push" methodology to push the configuration changes
+via passwordless ssh
+
+=========================================================================
+Setup of Ansible
+=============================
+1 Create 3-4 AWS ubuntu instances
+2 Name the first one Controller and the remaining as MAnaged nodes
+3 Establish passwordless ssh between Controller and managed nodes
+  a) Connect to managed node
+  b) Setup password of ubuntu user
+     sudo passwd ubuntu
+  c) Edit the sshd_config file
+     sudo vim /etc/ssh/sshd_config
+     Search for "PasswordAuthentication" and change it from no to yes
+  d) Restart ssh
+     sudo service ssh restart
+  e) Connect to Controller
+  f) Generate the ssh keys
+     ssh-keygen
+  g) Copy the public keys to authoried_keys on managed nodes
+     ssh-copy-id ubuntu@private_ip_of_managednode
+
+4 Install Ansible
+  a) Update the apt repository
+     sudo apt-get update
+  b) Install softwares required for ansible
+     sudo apt-get install software-properties-common
+  c) Add the latest version of ansible to apt repository
+     sudo apt-add-repository ppa:ansible/ansible
+  d) Update the apt repository
+     sudo apt-get update
+  e) Install ansible
+     sudo apt-get install -y ansible
+
+Ansible uses a files known as "inventory" file to read info about 
+the managed nodes,Here we should add the rmeote managed nodes
+ipaddress
+
+sudo vim /etc/ansible/hosts
+Copy paste the private ip address of all managed nodes
+
+
+=============================================================================
+Day 2
+=============================================================================
+Modules in ansible
+========================
+1 command: This is used to ecxecute linux commands on the managed nodes
+           This is the default module of Ansible
+
+2 shell: This is used to execute shell scripts or python scripts on 
+         the managed nodes.It is also used for running commands related
+         to redirection and piping
+
+3 ping: Used to chek if the remote servers are pingable or not
+
+4 user: This is used to perform user administration on the remote
+        servers like creating/deleting users,setting passwords,setting
+        home directoires etc
+
+5 copy: This is used to copy files and folders from the controller to 
+        the managed nodes
+
+6 fetch: This is used to copy files from the managed nodes to the controller
+
+7 file: Used to create/delete files or directories on the managed nodes
+
+8 apt: Used for s/w package management on the managed nodes like installing
+       s/w's,deleting,upgrading etc.This works on ubuntu based machines
+
+9 yum: Similar to apt but it works on Centos,Redhat linux etc
+
+10 service: Used to start stop and restart services on the managed nodes
+
+11 uri: Used to check if a url is reachable from the managed nodes
+
+12 git: Used to perform git version controlling on the remote managed nodes
+
+13 get_url: Used to download files from remote servers works like
+             linux command wget
+
+14 stat: Captures info about files and folders present on the managed nodes
+
+15 debug: This is the print statement of ansible
+
+16 include: Used to call child playbooks from the level of a parent playbook
+
+17 replace: Used to change specific sections of the file 
+
+18 pause: Used to pause the playbook execution for a specific period
+
+19 docker_container: Used to handle docker containers on the managed nodes
+
+20 docker_image: Used to handle docker images on the managed nodes
+
+=========================================================================
+Ansible perfrom remote configuration on servers in 3 ways
+1 Adhoc commands
+2 Playbooks
+3 Roles
+
+============================================================================
+Adhoc commands
+====================
+Syntax of Adhoc commands
+--------------------------------------
+ansible all/ipaddress/group_name  -i path_of_inventory -m module_name 
+                                                            -a '          ' 
+
+
+Command Module
+==================
+Ansible command to see the memory information of all managed nodes
+ansible all -i /etc/ansible/hosts -m command -a 'free m'
+
+/etc/ansible/hosts is the default inventory file and when using it
+we need not give -i
+ansible all  -m command -a 'free m'
+
+command module is the default module os ansible and we need not  use
+-m option when working on command module
+ansible all   -a 'free m'
+
+====================================================================
+Shell Module
+-----------------
+Ansible commands to downlaod the docker script and execute it to install docker
+ansible all -m shell -a ' curl -fsSL https://get.docker.com -o get-docker.sh'
+
+ansible all -m shell -a 'sh get-docker.sh'
+
+--------------------------------------------------------------------------
+Ansible command to capture memory statics into a file called as file1
+ansible all -m shell -a 'free -m > file1'
+
+=====================================================================
+User Module
+=================
+Ansible command to create a user and assign a password
+ansible all -m user -a 'name=sai password=intelliqit' -b
+
+Ansible command to create a user,assign home dir,default shell
+uid,comment etc
+ ansible all -m user -a 'name=Anu password=intelliqit 
+          home=/home/ubuntu/Anu uid=12345 shell=/bin/bash 
+                                     comment="A normal user"' -b
+
+================================================================================
