@@ -1,0 +1,108 @@
+Terraform
+===================
+This is  tool from Hashi corp to automate infrastructure creation
+It can be integrated with various "providers" like AWS,Azure etc
+
+Setup of terraform on Windows
+===============================
+1 Open https://www.terraform.io/downloads.html
+
+2 Download the version related to windows and extract it
+
+3 Copy the path of the terraform that is extracted
+
+4 Go to Environment varibles--->System varibales--->Hilight Path
+
+5 Click on New and Paste the path of terraform
+
+6 To check if terraform is configures
+  Open cmd prompt
+  terraform -v
+
+======================================================================
+Creating terrafrom scripts on Pycharm IDE
+===========================================
+1 Download and install Pycharm community edition 
+  https://www.jetbrains.com/pycharm/download/
+
+2 Download Terraform pycharm plugin
+  https://plugins.jetbrains.com/plugin/7808-hashicorp-terraform--hcl-language-support/reviews
+
+3 Open pycharm --->Click on File menu--->Setting--->Plugins
+  Click on Setting icon--->Select Plugins from Disk
+  Browse for the Pycharm terraform plugin
+  Restart Pycharm
+
+=========================================================================
+Create IAM user on AWS and give him admin previlages
+Download the user info csv file
+
+=======================================================================
+Providers
+===============
+This is a code library that can communicate with a specific technology
+like AWS,Jenkins,Azure etc
+Providers translate the terrafrom code into a structure that
+the technology can understand
+
+======================================================================
+Resources
+===============
+These are subcomponents or modules present in providers which help us
+to automate various services
+
+=======================================================================
+Terrafrom script to install the AWS providers and create
+a vpc and subnet with it
+
+provider "aws" {
+  region = "us-east-1"
+  access_key = "AKIAS43BASASN6WTFSYS"
+  secret_key = "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"
+}
+
+resource "aws_vpc" "qa_vpc" {
+  cidr_block = "10.0.0.0/24"
+}
+resource "aws_subnet" "qa_subnet" {
+  cidr_block = "10.0.0.0/25"
+  vpc_id = aws_vpc.qa_vpc.id
+}
+
+
+
+
+==============================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+  
+
+
+  

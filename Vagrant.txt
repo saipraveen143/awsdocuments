@@ -1,0 +1,22 @@
+Vagrant
+=======
+This is a tool for creating VM based infrastructure
+
+1 Download and install Oracle Virtual box
+  https://www.virtualbox.org/wiki/Downloads
+
+2 Download and install Vagrant
+  https://www.vagrantup.com/downloads
+
+3 To check the version of vagrant
+  Open cmd prompt
+  vagrant --version
+
+4 Download the vagrantfile and copy into an empty folder
+  
+5 To create the VM's from the above file
+  Open cmd prompt
+  cd path_of_vagrantfile_folder
+  vagrant up
+
+=========================================================================
